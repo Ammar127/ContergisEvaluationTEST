@@ -1,0 +1,87 @@
+
+<div class="container">
+   <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                <div class="row">
+                    <h1>&nbsp;&nbsp;&nbsp;&nbsp;Evaluation TEST</h1>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">  </div>
+                    <div class="col-md-7">
+                    <div class="row"><input class="form-control" id="usrinp"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="con" class="btn-primary btn" onclick="confoo()">Connect Now</button>
+                        <button id="discon" class="btn-primary btn" onclick="disconfoo()">DisConnect Now</button>
+                    </div>
+                    <div class="col-md-1">  </div>
+                </div>
+                <br>
+                <div class="row" id="msgsnd">
+                    <div class="col-md-2">  </div>
+                    <div class="col-md-7">
+                    <div class="row"><input class="form-control" id="msg"></div>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="send" class="btn-primary btn" onclick="sendmsg()">SEND<i class="fa fa-send-o" style="font-size:25px"></i></button>
+
+                    </div>
+                    <div class="col-md-1">  </div>
+                </div>
+            </div>
+            <br>
+            <dic class="row">
+                <h2>&nbsp;&nbsp;&nbsp;Log</h2>
+            </dic>
+            <div class="row">
+                <ul id="log">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var socket = socket = io.connect('http://localhost:3000');
+    var user = "Anonymous";
+    $("#discon").hide();
+    $("#msgsnd").hide();
+
+    function confoo() {
+
+        user = $("#usrinp").val();
+        $("#usrinp").prop('disabled', true);
+        $("#con").hide();
+        $("#discon").show();
+        $("#msgsnd").show();
+        socket.emit('connect', user);
+        socket.emit('con', user);
+
+
+
+    }
+
+    function disconfoo() {
+        $("#usrinp").val("");
+
+        socket.emit('discon',user);
+        user = "";
+        $("#usrinp").prop('disabled', false);
+        $("#con").show();
+        $("#discon").hide();
+        $("#msgsnd").hide();
+    }
+
+
+    function sendmsg(){
+        socket.emit('msgr',"<strong>"+user+":</strong>"+ $("#msg").val());
+        $("#msg").val("");
+    }
+    // Listen for events
+    socket.on('log', function(data){
+
+        document.getElementById("log").innerHTML += '<li>' + data + '</li>';
+    });
+
+</script>
